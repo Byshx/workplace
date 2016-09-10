@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>今日天气</title>
+</head>
+<div style="position:absolute;width:1920px;height:1080px"><img id="bigImage" src="images/sunny_day.jpg" />
+  <div id="city" style="font-family:Georgia, 'Times New Roman', Times, serif; font-size:144px;color:#FFF;position:absolute;left:700px;top:500px"></div>
+  <div id="temp1" style="font-family:微软雅黑; font-size:108px;color:#FFF;position:absolute;left:600px;top:700px"></div>
+  <div style="font-family:微软雅黑; font-size:108px;color:#FFF;position:absolute;left:850px;top:700px">~</div>
+  <div id="temp2" style="font-family:微软雅黑; font-size:108px;color:#FFF;position:absolute;left:950px;top:700px"></div>
+  <div style="position:absolute;left:500px;top:600px">
+    <img id="smallImage" src="images/weather_sun.png"/>
+  </div>
+    <div id="weather" style="font-family:微软雅黑; font-size:24px;color:#FFF;position:absolute;left:650px;top:650px"></div>
+      <div id="ptime" style="color:#FFF;position:absolute;left:1100px;top:820px"></div>
+  <div style="color:#FFF;position:absolute;left:1020px;top:665px">
+    <input id="indata" size="5" />
+    <button id="yes" onclick="" >确定</button>
+  </div>
+  <div style="color:#FFF;position:absolute;left:950px;top:670px">
+    <label id="changeCity" onclick="changeCity()" >更换城市</label>
+  </div>
+</div>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<body>
+<script>
+   var change = true;
+   document.getElementById("indata").style.visibility="hidden";
+	document.getElementById("yes").style.visibility="hidden";
+ function changeCity(){
+	if(change){
+	document.getElementById("indata").style.visibility="hidden";
+	document.getElementById("yes").style.visibility="hidden";
+	change = false;
+	}else{document.getElementById("indata").style.visibility="visible";
+	document.getElementById("yes").style.visibility="visible";
+	change = true;
+	}
+	
+}
+
+function getWeatherInfo(){ 
+	var obj;
+	var xmlhttp;
+   	if(window.XMLHttpRequest)
+	{	
+		xmlhttp = new XMLHttpRequest();
+	}
+	else{
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4 && xmlhttp.status==200){
+		var tmp = xmlhttp.responseText;
+		alert(tmp);
+	    obj = eval("("+tmp+")");
+		document.getElementById('city').innerHTML=obj.weatherinfo.city;		
+		document.getElementById('temp1').innerHTML=obj.weatherinfo.temp1;
+		document.getElementById('temp2').innerHTML=obj.weatherinfo.temp2;		
+				document.getElementById('weather').innerHTML=obj.weatherinfo.weather;	
+						document.getElementById('ptime').innerHTML="今日"+obj.weatherinfo.ptime+"前";
+		setBigImageLocation(obj.weatherinfo.weather);
+		setSmallImageLocation(obj.weatherinfo.weather);	
+		}
+	}
+	xmlhttp.open("GET","http:www.weather.com.cn/data/cityinfo/101200801.html",true);
+	xmlhttp.send();
+}
+
+getWeatherInfo();  //页面加载完后执行并取得服务器json数据
+
+function setBigImageLocation(weather){  
+	if(weather=="中雨"||weather=="大雨"||weather=="暴雪"){
+		document.getElementById('bigImage').src="images/rainy_day.jpg";
+	}
+	else if(weather=="小雨"){
+		document.getElementById('bigImage').src="images/dew.jpg";
+	}
+	else if(weather=="晴"){
+		document.getElementById('bigImage').src="images/sunny_day.jpg";
+	}
+	else if(weather=="多云"){
+		document.getElementById('bigImage').src="images/cloudy_day.jpg";
+	}
+	else if(weather=="小雪"||weather=="中雪"||weather=="大雪"||weather=="暴雪"){
+	    document.getElementById('bigImage').src="images/snowy_day.jpg";
+	}
+}
+
+function setSmallImageLocation(weather){  //1为大图
+	if(weather=="小雨" || weather=="中雨"){
+		document.getElementById('smallImage').src="images/weather_mistyrain_sun.png";
+	}
+	else if(weather=="中雨" || weather=="暴雨"){
+		document.getElementById('smallImage').src="images/weather_hail_sun.png";
+	}
+	else if(weather=="晴"){
+		document.getElementById('smallImage').src="images/weather_sun.png";
+	}
+	else if(weather=="多云"){
+		document.getElementById('smallImage').src="images/weather_cloud.png";
+	}
+	else if(weather=="小雪" || weather=="中雪" || weather=="大雪"||weather=="暴雪" || weather=="雨夹雪"){
+		document.getElementById('smallImage').src="images/weather_snow.png";
+	}	
+}
+</script>
+</body>
+</html>
